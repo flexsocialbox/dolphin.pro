@@ -96,7 +96,7 @@ class BxPollSearch extends BxTemplSearchResultText
      */
     function displaySearchUnit($aData)
     {
-        $aData['poll_ago'] = mktime() - $aData['poll_date'];
+        $aData['poll_ago'] = time() - $aData['poll_date'];
         $sOutputHtml =  $this -> oPollObject -> getPollBlock($aData);
         return $sOutputHtml;
     }
@@ -106,7 +106,7 @@ class BxPollSearch extends BxTemplSearchResultText
      *
      * @return : (text) - Html presentation data ;
      */
-    function displaySearchBox ($sCode, $sPaginate = '')
+    function displaySearchBox ($sCode, $sPaginate = '', $bAdminBox = false)
     {
         // generate the init poll's part ;
         $sInitSection =  $this -> oPollObject -> getInitPollPage(false);
@@ -147,8 +147,10 @@ class BxPollSearch extends BxTemplSearchResultText
         return $aSql;
     }
 
-    function showPagination($sModulePath = null)
+    function showPagination($aParams = array())
     {
+        $sModulePath = isset($aParams['module_path']) && !empty($aParams['module_path']) ? $aParams['module_path'] : false;
+
         $aParameters['settings'] = array(
             'count'             => $this -> aCurrent['paginate']['totalNum'],
             'per_page'          => $this -> aCurrent['paginate']['perPage'],

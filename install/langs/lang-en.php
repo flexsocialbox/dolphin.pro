@@ -22,7 +22,13 @@ $LANG= array(
   '_ADVICE_H' => 'Advice',
   '_ADVICE_H1' => 'Advice',
   '_ALREADY_ACTIVATED' => 'Your account is already active..',
-  '_ATT_ACTIVE' => '<a href="pedit.php?ID={0}">Edit Profile</a><span class="sys-bullet"></span><a href="javascript:void(0);" onclick="javascript:loadHtmlInPopup(\'explanation_popup\', \'explanation.php?explain=Active\');">Explanation</a><span class="sys-bullet"></span><a href="change_status.php">Suspend</a>',
+  '_ATT_ACTIVE' => '<a href="pedit.php?ID={0}">Edit Profile</a>
+  <span class="sys-bullet"></span>
+  <a href="javascript:void(0);" onclick="javascript:loadHtmlInPopup(\'explanation_popup\', \'explanation.php?explain=Active\');">Explanation</a>
+  <span class="sys-bullet"></span>
+  <a href="change_status.php">Suspend</a>
+  <span class="sys-bullet"></span>
+  <a href="javascript:void(0);" onclick="bx_export_user_data_popup()">Export personal data</a>',
   '_ATT_ACTIVE_E' => 'You are an active member. You can suspend your profile to hide it from others, if needed.',
   '_ATT_APPROVAL' => '<a href="javascript:void(0);" onclick="javascript:loadHtmlInPopup(\'explanation_popup\', \'explanation.php?explain=Approval\');">Info</a>',
   '_ATT_APPROVAL_E' => 'Your profile activation is in progress. Usually it takes up to 24 hours. Thank you for your patience.',
@@ -1444,6 +1450,7 @@ For any further information please <a href="{1}contact.php">contact us</a>
   '_adm_txt_mlevels_edit' => 'Edit',
   '_adm_txt_mlevels_icon' => 'Image Icon',
   '_adm_txt_mlevels_icon_err' => 'You need to select an image for thumbnail',
+  '_adm_txt_mlevels_icon_info_edit' => 'Leave empty if you want to use previously uploaded icon.',
   '_adm_txt_mlevels_is_used' => 'There are members using the level so it cannot be deleted',
   '_adm_txt_mlevels_levels' => 'Levels',
   '_adm_txt_mlevels_levels_add' => 'Add Level',
@@ -1706,6 +1713,7 @@ For any further information please <a href="{1}contact.php">contact us</a>
   '_mma_comments_remove_own' => 'comments remove own',
   '_mma_comments_vote' => 'comments vote',
   '_mma_get_other_members_emails' => 'get other members\' emails',
+  '_mma_send_friend_request' => 'send friend requests',
   '_mma_send_greetings' => 'send greetings',
   '_mma_send_messages' => 'send messages',
   '_mma_view_profiles' => 'view profiles',
@@ -1891,6 +1899,7 @@ More info about URI DNSBL: <br />
   '_sys_box_title_download' => 'Download',
   '_sys_box_title_search_keyword' => 'Keyword Search',
   '_sys_box_title_search_people' => 'People Search',
+  '_sys_btn_thumbnail_change' => 'Change Thumbnail',
   '_sys_btn_cover_change' => 'Change Cover',
   '_sys_btn_fans_add_to_admins' => 'To Admins',
   '_sys_btn_fans_confirm' => 'Confirm',
@@ -1918,6 +1927,7 @@ More info about URI DNSBL: <br />
   '_sys_cnts_txt_mutual_friends' => '{0} Mutual Friends',
   '_sys_email_footer_info' => 'To unsubscribe - login to your account, edit your profile and uncheck \'Receive site notifications\'.',
   '_sys_err_categories' => 'please specify at least one category',
+  '_sys_export_success' => 'Data export download link has been sent to your email: {0}',
   '_sys_invitation_step_additional_emails' => 'Additional Emails',
   '_sys_invitation_step_additional_emails_info' => 'Add limited number of emails to send invitation to',
   '_sys_invitation_step_invitation_text' => 'Invitation Text',
@@ -2053,6 +2063,7 @@ You can do this by:
   '_sys_media_disapproved' => 'File not approved yet',
   '_sys_media_processing' => 'File not processed yet',
   '_sys_media_not_found' => 'File not found',
+  '_sys_wrn_disabled_scripts' => 'Your browser doesn\'t support scripts!',
   '_sys_x_byte' => '{0} bytes',
   '_sys_x_gigabyte' => '{0} Gb',
   '_sys_x_kilobyte' => '{0} Kb',

@@ -15,6 +15,7 @@ class BxDolProfileFields extends Thing
     var $aBlocks; // array of current blocks
     var $aCache; // full cache of profile fields
     var $aCoupleMutual; //couple mutual fields
+    var $aCoupleMutualCopy; //couple mutual fields, which values should be coppied in second profile.
 
     var $sLinkPref = '#!'; //prefix for values links
 
@@ -386,7 +387,9 @@ class BxDolProfileFields extends Thing
         if( empty($sCheck) )
             return true;
 
-        $sFunc = create_function( '$arg0', $sCheck );
+        $sFunc = function($arg0) use ($sCheck) {
+            return eval($sCheck);
+        };
 
         if( !$sFunc( $mValue ) )
             return false;
@@ -657,6 +660,7 @@ class BxDolProfileFields extends Thing
         $aAllItems = $this -> aCache[100][0]['Items'];
 
         $this -> aCoupleMutual = array( 'NickName', 'Password', 'Email', 'Country', 'City', 'zip', 'EmailNotify' );
+        $this -> aCoupleMutualCopy = array('Country', 'City', 'zip');
 
         foreach( $aAllItems as $aItem ) {
             if( $aItem['Name'] == 'Couple' ) {
@@ -679,6 +683,11 @@ class BxDolProfileFields extends Thing
     function getCoupleMutualFields()
     {
         return $this -> aCoupleMutual;
+    }
+
+    function getCoupleMutualFieldsCopy()
+    {
+        return $this -> aCoupleMutualCopy;
     }
 
     function getViewableValue( $aItem, $sValue )
@@ -1033,7 +1042,7 @@ class BxDolProfileFields extends Thing
         return $sCustomHtmlBefore . $oForm->getCode() . $sCustomHtmlAfter;
     }
 
-    function getFormsSearch($aParams)
+    function getFormsSearch($aParams, $bReturnArray = false)
     {
         $aShowModes = array('featured', 'birthdays', 'top_rated', 'popular', 'moderators');
 
@@ -1043,6 +1052,7 @@ class BxDolProfileFields extends Thing
         $sSearchModeName = ($this->iAreaID == 10 ? 'quick' : ($this->iAreaID == 11 ? 'adv' : 'simple'));
 
         $sResult = '';
+        $aResult = array();
 
         $iFormCounter = 1;
 
@@ -1060,6 +1070,18 @@ class BxDolProfileFields extends Thing
                 'name'  => 'search_mode',
                 'value' => $sSearchModeName,
             );
+            
+            // create search result mode hidden input (if requested)
+            $sSrmKey = 'search_result_mode';
+            if(!empty($aDefaultParams[$sSrmKey])) {
+                $aInputs[] = array(
+                    'type'  => 'hidden',
+                    'name'  => $sSrmKey,
+                    'value' => $aDefaultParams[$sSrmKey],
+                );
+
+                unset($aDefaultParams[$sSrmKey]);
+            }
 
             // create show parameter as hidden input 
             $aInputs[] = array(
@@ -1118,7 +1140,7 @@ class BxDolProfileFields extends Thing
                         }
 
                         $aFormInput['values'] = $this->convertValues4Input($aItem['Values'], $aItem['UseLKey'], 'search');
-                        if (is_array($aFormInput['value'])) {
+                        if($aItem['Type'] == 'select_one' && is_array($aFormInput['value'])) {
                             $aFormInput['value'] = $aFormInput['value'][0];
                         }
                     break;
@@ -1235,13 +1257,17 @@ EOF;
             if (isset($aParams['inputs']) && is_array($aParams['inputs']))
                 $aForm['inputs'] = array_merge ($aForm['inputs'], $aParams['inputs']);
 
-            $oForm = new BxTemplFormView($aForm);
-            $sResult .= $oForm->getCode();
+            if(!$bReturnArray) {
+                $oForm = new BxTemplFormView($aForm);
+                $sResult .= $oForm->getCode();
+            }
+            else
+                $aResult[] = $aForm;
 
             $iFormCounter++;
         } // block generation finished
 
-        return $sResult;
+        return !$bReturnArray ? $sResult : $aResult;
     }
 
     /**

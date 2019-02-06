@@ -41,6 +41,7 @@ define('ACTION_ID_COMMENTS_POST', 6);
 define('ACTION_ID_COMMENTS_VOTE', 7);
 define('ACTION_ID_COMMENTS_EDIT_OWN', 8);
 define('ACTION_ID_COMMENTS_REMOVE_OWN', 9);
+define('ACTION_ID_SEND_FRIEND_REQUEST', 10);
 
 //PREDEFINED MEMBERSHIP ID's
 
@@ -127,7 +128,7 @@ function getMemberMembershipInfo_current($iMemberId, $time = '')
      * NOTE. Don't use cache here, because it's causing an error, if a number of memberrship levels are purchased at the same time.
      * fromMemory returns the same DateExpires because buyMembership function is called in cycle in the same session.
      */
-    $aMemLevel =& $GLOBALS['MySQL']->getRow("
+    $aMemLevel = $GLOBALS['MySQL']->getRow("
         SELECT  `sys_acl_levels_members`.IDLevel as ID,
                 `sys_acl_levels`.Name as Name,
                 UNIX_TIMESTAMP(`sys_acl_levels_members`.DateStarts) as DateStarts,
@@ -167,7 +168,7 @@ function getMemberMembershipInfo_current($iMemberId, $time = '')
      * no purchased/assigned memberships for the member or all of them have expired -- the member is assumed to have Standard membership
      */
     if(is_null($aMemLevel['ID'])) {
-        $aMemLevel =& $GLOBALS['MySQL']->fromCache('sys_acl_levels' . MEMBERSHIP_ID_STANDARD, 'getRow', "SELECT ID, Name FROM `sys_acl_levels` WHERE ID = ?", [MEMBERSHIP_ID_STANDARD]);
+        $aMemLevel = $GLOBALS['MySQL']->fromCache('sys_acl_levels' . MEMBERSHIP_ID_STANDARD, 'getRow', "SELECT ID, Name FROM `sys_acl_levels` WHERE ID = ?", [MEMBERSHIP_ID_STANDARD]);
         if (!$aMemLevel || !count($aMemLevel)) {
             //again, this should never happen, but just in case
             echo "<br /><b>getMemberMembershipInfo()</b> fatal error: <b>Standard</b> membership not found.";
@@ -432,13 +433,13 @@ function checkAction($iMemberId, $actionID, $performAction = false, $iForcedProf
 
         $actionsLeft = $performAction ? $allowedCnt - 1 : $allowedCnt;
         $validSince = time();
-
+        $actionTrack = $actionTrack->fetch();
+        
         //member is requesting/performing this action for the first time,
         //and there is no corresponding record in sys_acl_actions_track table
 
-        if($actionTrack->rowCount() <= 0) {
+        if (!$actionTrack) {
             //add action to sys_acl_actions_track table
-
             db_res("
                 INSERT INTO `sys_acl_actions_track` (IDAction, IDMember, ActionsLeft, ValidSince)
                 VALUES ($actionID, $iMemberId, $actionsLeft, FROM_UNIXTIME($validSince))");
@@ -447,12 +448,7 @@ function checkAction($iMemberId, $actionID, $performAction = false, $iForcedProf
             return $result;
         }
 
-        //action has been requested/performed at least once at this point
-        //and there is a corresponding record in sys_acl_actions_track table
-
-        $actionTrack = $actionTrack->fetch();
-
-        //action record in sys_acl_actions_track table is out of date
+        //action record in sys_acl_actions_track table is out of date         
 
         $periodEnd = (int)$actionTrack['ValidSince'] + $periodLen * 3600; //ValidSince is in seconds, PeriodLen is in hours
 
@@ -683,8 +679,8 @@ function getMemberships($purchasableOnly = false)
 
     $resMemLevels = db_res("SELECT DISTINCT `sys_acl_levels`.ID, `sys_acl_levels`.Name FROM `sys_acl_levels` $queryPurchasable");
 
-    while(list($id, $name) = $resMemLevels->fetch()) {
-        $result[(int)$id] = $name;
+    while($r = $resMemLevels->fetch()) {
+        $result[(int)$r['ID']] = $r['Name'];
     }
 
     return $result;
@@ -740,7 +736,7 @@ function getMembershipInfo($iMembershipId)
 }
 
 /**
- * Define action, dirine defining all names are transl;ated the following way:
+ * Define action, during defining all names are translated the following way:
  *  my action => BX_MY_ACTION
  *
  * @param $aActions array of actions from sys_acl_actions table, with default array keys (starting from 0) and text values
@@ -754,7 +750,6 @@ function defineMembershipActions ($aActionsAll, $sPrefix = 'BX_')
     if (!$aActions)
         return;
 
-//    $sActions = implode("','", $aActions);
     $sPlaceholders = implode(',', array_fill(0, count($aActions), '?'));
     $res = db_res("SELECT `ID`, `Name` FROM `sys_acl_actions` WHERE `Name` IN({$sPlaceholders})", $aActions);
     while ($r = $res->fetch()) {

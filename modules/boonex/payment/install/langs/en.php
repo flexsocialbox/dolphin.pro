@@ -6,6 +6,8 @@
 
 $aLangContent = array(
     '_sys_module_payment' => 'Payment',
+
+    '_payment' => 'Payment',
     '_payment_pcpt_details' => 'Payment Details',
     '_payment_pcpt_view_cart' => 'Shopping cart',
     '_payment_pcpt_admin' => 'Payment',
@@ -65,7 +67,8 @@ $aLangContent = array(
     '_payment_btn_history' => 'History',
     '_payment_btn_cart' => 'Cart',
     '_payment_amenu_payment' => 'Payment',
-    '_payment_txt_shopping_cart' => '{0}\'s cart',
+    '_payment_txt_shopping_cart' => 'Seller: {0}',
+    '_payment_txt_shopping_cart_summary' => '{0} item(s) - {1} {2}',
     '_payment_txt_date' => 'Date',
     '_payment_txt_client' => 'Client',
     '_payment_txt_seller' => 'Seller',

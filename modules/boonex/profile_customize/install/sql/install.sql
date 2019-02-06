@@ -54,9 +54,15 @@ INSERT INTO `sys_options` (`Name`, `VALUE`, `kateg`, `desc`, `Type`, `check`, `e
 
 -- action
 SET @iMaxOrder = (SELECT `Order` + 1 FROM `sys_objects_actions` WHERE `Type` = 'Profile' ORDER BY `Order` DESC LIMIT 1);
-INSERT INTO `sys_objects_actions` (`Caption`, `Icon`, `Url`, `Script`, `Eval`, `Order`, `Type`) VALUES('{evalResult}', 'magic', '', '$(''#profile_customize_page'').fadeIn(''slow'');', 'if (defined(''BX_PROFILE_PAGE'') && {ID} == {member_id} && getParam(''bx_profile_customize_enable'') == ''on'') return _t( ''_Customize'' ); else return null;', @iMaxOrder, 'Profile');
+INSERT INTO `sys_objects_actions` (`Caption`, `Icon`, `Url`, `Script`, `Eval`, `Order`, `Type`) VALUES('{evalResult}', 'magic', '', '$(''#profile_customize_page'').fadeIn(''slow'');', 'return array(''evalResult'' => defined(''BX_PROFILE_PAGE'') && {ID} == {member_id} && getParam(''bx_profile_customize_enable'') == ''on'' ? _t( ''_Customize'' ) : null, ''evalResultCssClassWrapper'' => ''bx-phone-hide'');', @iMaxOrder, 'Profile');
 
 -- admin menu
 SET @iMax = (SELECT MAX(`order`) FROM `sys_menu_admin` WHERE `parent_id` = '2');
 INSERT IGNORE INTO `sys_menu_admin` (`parent_id`, `name`, `title`, `url`, `description`, `icon`, `order`) VALUES
 (2, 'bx_profile_customize', '_bx_profile_customize', '{siteUrl}modules/?r=profile_customize/administration', 'Profile customizer module by BoonEx', 'magic', @iMax+1);
+
+-- export
+SET @iMaxOrderExports = (SELECT MAX(`order`)+1 FROM `sys_objects_exports`);
+INSERT INTO `sys_objects_exports` (`object`, `title`, `class_name`, `class_file`, `order`, `active`) VALUES
+('bx_profile_customize', '_sys_module_profile_customize', 'BxProfileCustomizeExport', 'modules/boonex/profile_customize/classes/BxProfileCustomizeExport.php', @iMaxOrderExports, 1);
+

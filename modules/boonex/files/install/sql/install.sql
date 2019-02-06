@@ -19,8 +19,8 @@ CREATE TABLE `[db_prefix]_main` (
   `Status` enum('approved','disapproved','pending') NOT NULL default 'pending',
   `Type` varchar(30) NOT NULL default 'text/plain',
   PRIMARY KEY  (`ID`),
-  KEY `Owner` (`Owner`),
-  KEY `Uri` (`Uri`)
+  UNIQUE KEY `Uri` (`Uri`),
+  KEY `Owner` (`Owner`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- Favorites
@@ -365,3 +365,8 @@ SET @iMaxOrderCharts = (SELECT MAX(`order`)+1 FROM `sys_objects_charts`);
 INSERT INTO `sys_objects_charts` (`object`, `title`, `table`, `field_date_ts`, `field_date_dt`, `query`, `active`, `order`) VALUES
 ('[db_prefix]', '_bx_files', 'bx_files_main', 'Date', '', '', 1, @iMaxOrderCharts);
 
+-- export
+
+SET @iMaxOrderExports = (SELECT MAX(`order`)+1 FROM `sys_objects_exports`);
+INSERT INTO `sys_objects_exports` (`object`, `title`, `class_name`, `class_file`, `order`, `active`) VALUES
+('[db_prefix]', '_bx_files', 'BxFilesExport', 'modules/boonex/files/classes/BxFilesExport.php', @iMaxOrderExports, 1);

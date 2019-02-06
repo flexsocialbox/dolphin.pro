@@ -54,7 +54,7 @@ class BxWallModule extends BxDolModule
         parent::__construct($aModule);
 
         $this->_oConfig->init($this->_oDb);
-        $this->_oTemplate->init($this);
+        $this->_oTemplate->setModule($this);
 
         $this->_iOwnerId = 0;
 
@@ -140,11 +140,11 @@ class BxWallModule extends BxDolModule
     {
     	$iAuthorId = $this->_getAuthorId();
 
-        $iOwnerId = process_db_input(bx_get('owner_id'), BX_DATA_INT);
+        $iOwnerId = (int)bx_get('owner_id');
         $aContent = array(
-            'type' => process_db_input(bx_get('type'), BX_DATA_TEXT),
-            'action' => process_db_input(bx_get('action'), BX_DATA_TEXT),
-            'object_id' => process_db_input(bx_get('object_id'), BX_DATA_INT),
+            'type' => process_db_input(bx_get('type')),
+            'action' => process_db_input(bx_get('action')),
+            'object_id' => (int)bx_get('object_id'),
         );
 
         $aReposted = $this->_oDb->getReposted($aContent['type'], $aContent['action'], $aContent['object_id']);

@@ -168,7 +168,7 @@ switch ($sAction) {
                     exit;
                 }
             }
-            $GLOBALS['_page']['header'] = _t('_Error occured');;
+            $GLOBALS['_page']['header'] = _t('_Error occured');
             $GLOBALS['_page_cont'][$GLOBALS['_ni']]['page_main_code'] = _t('_Error occured');
         break;
 }
@@ -327,6 +327,11 @@ function PageListFriend($iProfileId, $iMemberId = 0)
     if( !$iMemberId || !getProfileInfo($iMemberId) ) {
         return MsgBox( _t('_Failed to apply changes') );
     }
+
+    $iUseriId = getLoggedId();
+    $aResult = checkAction($iUseriId, ACTION_ID_SEND_FRIEND_REQUEST, $bPerformAction);
+    if($aResult[CHECK_ACTION_RESULT] != CHECK_ACTION_RESULT_ALLOWED)
+        return MsgBox($aResult[CHECK_ACTION_MESSAGE]);
 
     // block members
     if ( isBlocked($iMemberId, $iProfileId) ) {

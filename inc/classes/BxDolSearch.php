@@ -277,12 +277,15 @@ class BxDolSearchResult
         if ($aData) {
             foreach ($aData as $k => $a) {
                 $aData[$k][$f['Link']] = $this->getRssUnitLink ($a);
+
+                if(isset($f['Image']))
+                    $aData[$k][$f['Image']] = $this->getRssUnitImage ($a, $f['Image']);
             }
         }
 
         require_once(BX_DIRECTORY_PATH_CLASSES . 'BxDolRssFactory.php');
-        $oRss = new BxDolRssFactory ();
-
+        $oRss = new BxDolRssFactory();
+        $oRss->SetRssHeader();
         return $oRss->GenRssByCustomData(
             $aData,
             $this->aCurrent['rss']['title'] ? $this->aCurrent['rss']['title'] : $this->aCurrent['title'],
@@ -300,6 +303,14 @@ class BxDolSearchResult
     function getRssUnitLink (&$a)
     {
         // override this functions to return permalink to rss unit
+    }
+
+    /**
+     * Return rss unit image (redeclared)
+     */
+    function getRssUnitImage (&$a, $sField)
+    {
+        // override this functions to return image for rss unit
     }
 
     /*
@@ -353,7 +364,7 @@ class BxDolSearchResult
      * Get html code of pagination
      */
 
-    function showPagination ()
+    function showPagination ($aParams = array())
     {
     }
 

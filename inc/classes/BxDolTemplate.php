@@ -342,7 +342,7 @@ class BxDolTemplate
      */
     function addDynamicLocationJs($sLocationPath, $sLocationUrl)
     {
-        $sLocationKey = mktime();
+        $sLocationKey = time();
         $this->addLocationJs($sLocationKey, $sLocationPath, $sLocationUrl);
 
         return $sLocationKey;
@@ -1200,7 +1200,9 @@ class BxDolTemplate
 
             $sContent = preg_replace_callback(
                 "'url\s*\(\s*[\'|\"]*\s*([a-zA-Z0-9\.\/\?\#_=-]+)\s*[\'|\"]*\s*\)'",
-                create_function('$aMatches', 'return BxDolTemplate::_callbackParseUrl("' . addslashes($sPath) . '", $aMatches);'),
+                function ($aMatches) use ($sPath) { 
+                    return BxDolTemplate::_callbackParseUrl(addslashes($sPath), $aMatches);
+                },
                 $sContent
             );
         }

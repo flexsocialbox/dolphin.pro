@@ -224,12 +224,26 @@ class BxBaseFunctions
         if ( is_array($aMatches) and !empty($aMatches) ) {
             // replace all founded markers ;
             foreach( $aMatches[3] as $iMarker => $sMarkerValue ) {
-                if ( is_array($aMemberSettings) and array_key_exists($sMarkerValue, $aMemberSettings) and !array_key_exists($sMarkerValue, $this -> aSpecialKeys) ){
+                if( is_array($aMemberSettings) and array_key_exists($sMarkerValue, $aMemberSettings) and !array_key_exists($sMarkerValue, $this -> aSpecialKeys) ){
                     $sTransformText = str_replace( '{' . $sMarkerValue . '}', $aMemberSettings[$sMarkerValue],  $sTransformText);
-                } else if ( $sMarkerValue == 'evalResult' and $sExecuteCode ) {
-                    //find all special markers into Execute code ;
-                    $sExecuteCode = $this -> markerReplace( $aMemberSettings, $sExecuteCode );
-                    $sTransformText =  str_replace( '{' . $sMarkerValue . '}', eval( $sExecuteCode ),  $sTransformText);
+                } 
+                else if(($sMarkerValue == 'evalResult' || substr($sMarkerValue, 0, 10) == 'evalResult')) {
+                    $sExecuteResult = '';
+                    if(!empty($sExecuteCode)) {
+                        $sExecuteCode = $this -> markerReplace($aMemberSettings, $sExecuteCode);
+                        $sExecuteResult = eval($sExecuteCode);
+
+                        /*
+                         * Custom keys like 'evalResult...' must be taken from EvalResult array only. 
+                         * It's needed to correctly serve old EvalResult strings.
+                         */
+                        if(is_array($sExecuteResult))
+                            $sExecuteResult = isset($sExecuteResult[$sMarkerValue]) ? $sExecuteResult[$sMarkerValue] : '';
+                        else if($sMarkerValue != 'evalResult')
+                            $sExecuteResult = '';
+                    }
+
+                    $sTransformText =  str_replace( '{' . $sMarkerValue . '}', $sExecuteResult,  $sTransformText);
                 } else {
                     //  if isset into special keys ;
                     if ( array_key_exists($sMarkerValue, $this -> aSpecialKeys) ) {
@@ -244,8 +258,9 @@ class BxBaseFunctions
 
             // try to translate item ;
             if ( $bTranslate ) {
-                foreach( $aMatches[1] as $iMarker => $sMarkerValue ) if ( $sMarkerValue )
-                    $sTransformText = str_replace( $sMarkerValue , _t( trim($sMarkerValue) ),  $sTransformText);
+                foreach( $aMatches[1] as $iMarker => $sMarkerValue ) 
+                    if ( $sMarkerValue )
+                        $sTransformText = str_replace( $sMarkerValue , _t( trim($sMarkerValue) ),  $sTransformText);
             }
         }
 
@@ -312,7 +327,7 @@ class BxBaseFunctions
      */
     function popupBox($sName, $sTitle, $sContent, $aActions = array())
     {
-        $iId = !empty($sName) ? $sName : mktime();
+        $iId = !empty($sName) ? $sName : time();
 
         $aButtons = array();
         foreach($aActions as $sId => $aAction)
@@ -393,102 +408,117 @@ class BxBaseFunctions
 
     function getMemberThumbnail($iId, $sFloat = 'none', $bGenProfLink = false, $sForceSex = 'visitor', $isAutoCouple = true, $sType = 'medium', $aOnline = array(), $sTmplSfx = '')
     {
-        $aProfile = getProfileInfo($iId);
-        if (!$aProfile)
-            return '';
-
-		$bOnline = 0;
-        $bCouple = ((int)$aProfile['Couple'] > 0) && $isAutoCouple ? true : false;
-
-        $bThumb1 = $bThumb2 = false;
-        $sThumbUrl = $sThumbTwiceUrl = $sThumbUrlCouple = $sThumbTwiceUrlCouple = '';
-        $sThumbSetting = getParam($sType == 'small' ? 'sys_member_info_thumb_icon' : 'sys_member_info_thumb');       
-
-        bx_import('BxDolMemberInfo');
-        $o = BxDolMemberInfo::getObjectInstance($sThumbSetting);
-        $sThumbUrl = $o ? $o->get($aProfile) : '';
-
-        if(!empty($sThumbUrl)) {
-			$o = BxDolMemberInfo::getObjectInstance($sThumbSetting . '_2x');
-	        $sThumbTwiceUrl = $o ? $o->get($aProfile) : '';
-	        if(!$sThumbTwiceUrl)
-	            $sThumbTwiceUrl = $sThumbUrl;
+        $bForceSexSite = $bForceSexVacant = false;
+        if(!$bGenProfLink) {
+            if($sForceSex == 'site')
+                $bForceSexSite = true;
+            else if($sForceSex != 'visitor')
+                $bForceSexVacant = true;
         }
 
-        $bThumb1 = !empty($sThumbUrl) && !empty($sThumbTwiceUrl);
+        $bProfile = false;
+        $aProfile = array();
+        if(!$bForceSexSite) {
+            $aProfile = getProfileInfo($iId);
+            if(!$aProfile)
+                return '';
 
-        $sLink = '';
-        $sUserTitle = '';
-        $sUserInfo = '';
+            $bProfile = true;
+        }
 
-        $oUserStatusView = bx_instance('BxDolUserStatusView');
-        $sStatusIcon = $oUserStatusView->getStatusIcon($iId, 'icon8');
+        $bCouple = $bThumb = $bThumbCouple = false;
+        $sThumbUrl = $sThumbUrlTwice = '';
+        $sThumbUrlCouple = $sThumbUrlCoupleTwice = '';
+        $sUserTitle = $sUserTitleCouple = $sUserLink = $sUserInfo = $sUserStatusIcon = $sUserStatusTitle = '';
 
-        if ($iId > 0) {
-            $sLink = getProfileLink($iId);
+        if($bProfile) {
+            $oUserStatusView = bx_instance('BxDolUserStatusView');
+            $sUserStatusIcon = $oUserStatusView->getStatusIcon($iId, 'icon8');
+            $sUserStatusTitle = $oUserStatusView->getStatus($iId);
+
+            $sUserLink = getProfileLink($iId);
             $sUserTitle = $this->getUserTitle($iId);
             $sUserInfo = $this->getUserInfo($iId);
 
-            if (empty($aOnline) || 0 != (int)$aOnline['is_online'])
-                $bOnline = 1;
-        }
+            $sThumbSetting = getParam($sType == 'small' ? 'sys_member_info_thumb_icon' : 'sys_member_info_thumb');       
 
-        if(!$bGenProfLink) {
-            if ($sForceSex != 'visitor') {
-                $sUserTitle = _t('_Vacant');
-                $sLink = 'javascript:void(0)';
+            //--- get first person thumbs
+            bx_import('BxDolMemberInfo');
+            $o = BxDolMemberInfo::getObjectInstance($sThumbSetting);
+            $sThumbUrl = $o ? $o->get($aProfile) : '';
+
+            if(!empty($sThumbUrl)) {
+                $o = BxDolMemberInfo::getObjectInstance($sThumbSetting . '_2x');
+                $sThumbUrlTwice = $o ? $o->get($aProfile) : '';
+                if(!$sThumbUrlTwice)
+                    $sThumbUrlTwice = $sThumbUrl;
+            }
+
+            $bThumb = !empty($sThumbUrl) && !empty($sThumbUrlTwice);
+
+            if((int)$aProfile['Couple'] > 0 && $isAutoCouple) {
+                $bCouple = true;
+                $aProfileCouple = getProfileInfo($aProfile['Couple']);
+
+                $sUserTitleCouple = $this->getUserTitle($aProfile['Couple']);
+
+                //--- get second person thumbs
+                $o = BxDolMemberInfo::getObjectInstance($sThumbSetting);
+                $sThumbUrlCouple = $o ? $o->get($aProfileCouple) : '';
+
+                if(!empty($sThumbUrlCouple)) {
+                    $o = BxDolMemberInfo::getObjectInstance($sThumbSetting . '_2x');
+                    $sThumbUrlCoupleTwice = $o ? $o->get($aProfileCouple) : '';
+                    if(!$sThumbUrlCoupleTwice)
+                        $sThumbUrlCoupleTwice = $sThumbUrlCouple;
+                }
+
+                $bThumbCouple = !empty($sThumbUrlCouple) && !empty($sThumbUrlCoupleTwice);
             }
         }
 
-        if($bCouple) {
-            $aProfileCouple = getProfileInfo($aProfile['Couple']);
-
-            $o = BxDolMemberInfo::getObjectInstance($sThumbSetting);
-	        $sThumbUrlCouple = $o ? $o->get($aProfileCouple) : '';
-
-	        if(!empty($sThumbUrlCouple)) {
-				$o = BxDolMemberInfo::getObjectInstance($sThumbSetting . '_2x');
-		        $sThumbTwiceUrl = $o ? $o->get($aProfileCouple) : '';
-		        if(!$sThumbTwiceUrlCouple)
-		            $sThumbTwiceUrlCouple = $sThumbUrlCouple;
-	        }
-
-	        $bThumb2 = !empty($sThumbUrlCouple) && !empty($sThumbTwiceUrlCouple);
+        if($bForceSexSite) {
+            $sUserTitle = getParam('site_title');
+            $sUserLink = BX_DOL_URL_ROOT;
+        }
+        else if($bForceSexVacant) {
+            $sUserTitle = _t('_Vacant');
+            $sUserLink = 'javascript:void(0)';
         }
 
         return $GLOBALS['oSysTemplate']->parseHtmlByName($bCouple ? 'thumbnail_couple' . $sTmplSfx . '.html' : 'thumbnail_single' . $sTmplSfx . '.html', array(
-            'iProfId' => $iId ? $iId : 0,
-            'sys_thb_float' => $sFloat,
+            'iProfId' => $bProfile ? $iId : 0,
+            'sys_thb_float' => 'tbf_' . $sFloat,
             'classes_add' => ($bGenProfLink ? ' thumbnail_block_with_info' : '') . ($sType != 'medium' ? ' thumbnail_block_icon' : ''),
-            'sys_status_icon' => $sStatusIcon,
-            'sys_status_title' => $oUserStatusView->getStatus($iId),
-            'usr_profile_url' => $sLink,
+            'sys_status_icon' => $sUserStatusIcon,
+            'sys_status_title' => $sUserStatusTitle,
+            'usr_profile_url' => $sUserLink,
         	'bx_if:show_thumbnail_image1' => array(
-        		'condition' => $bThumb1,
-        		'content' => array(
-        			'usr_thumb_url0' => $sThumbUrl,
-        			'usr_thumb_url0_2x' => $sThumbTwiceUrl,
-        			'usr_thumb_alt0' => bx_html_attribute($sUserTitle),
-        		)
+                    'condition' => $bThumb,
+                    'content' => array(
+                        'usr_thumb_url0' => $sThumbUrl,
+                        'usr_thumb_url0_2x' => $sThumbUrlTwice,
+                        'usr_thumb_alt0' => bx_html_attribute($sUserTitle),
+                    )
         	),
         	'bx_if:show_thumbnail_image2' => array(
-        		'condition' => $bThumb2,
-        		'content' => array(
-        			'usr_thumb_url1' => $sThumbUrlCouple,
-        			'usr_thumb_url1_2x' => $sThumbTwiceUrlCouple,
-        			'usr_thumb_alt1' => bx_html_attribute($sUserTitle),
-        		)
+                    'condition' => $bThumbCouple,
+                    'content' => array(
+                        'usr_thumb_url1' => $sThumbUrlCouple,
+                        'usr_thumb_url1_2x' => $sThumbUrlCoupleTwice,
+                        'usr_thumb_alt1' => bx_html_attribute($sUserTitleCouple),
+                    )
         	),
         	'bx_if:show_thumbnail_letter1' => array(
-        		'condition' => !$bThumb1,
+        		'condition' => !$bThumb,
         		'content' => array(
         			'letter' => mb_substr($sUserTitle, 0, 1)
         		)
         	),
         	'bx_if:show_thumbnail_letter2' => array(
-        		'condition' => !$bThumb2,
+        		'condition' => !$bThumbCouple,
         		'content' => array(
-        			'letter' => mb_substr($sUserTitle, 0, 1)
+        			'letter' => mb_substr($sUserTitleCouple, 0, 1)
         		)
         	),
             'usr_thumb_title0' => $sUserTitle,
@@ -497,7 +527,7 @@ class BxBaseFunctions
                 'content' => array(
                     'user_title' => $sUserTitle,
                     'user_info' => $sUserInfo,
-                    'usr_profile_url' => $sLink,
+                    'usr_profile_url' => $sUserLink,
                 ),
             ),
         ));
@@ -594,8 +624,11 @@ class BxBaseFunctions
                 $sActionLink = $this -> genActionLink( $aKeys, $aRow, 'menuLink', $sTemplateIndexActionLink );
 
                 if ( $sActionLink ) {
+                    $sActionLinkClass = 'actionItem' . ($iIndex % 2 == 0 ? 'Even' : 'Odd') . ' {evalResultCssClassWrapper}';
+                    $sActionLinkClass = $this -> markerReplace($aKeys, $sActionLinkClass, $aRow['Eval']);
+
                     $aActionsItem[] = array (
-                    	'action_link_class' => 'actionItem' . ($iIndex % 2 == 0 ? 'Even' : 'Odd'),
+                    	'action_link_class' => $sActionLinkClass,
                         'action_link' => $sActionLink,
                     );
 

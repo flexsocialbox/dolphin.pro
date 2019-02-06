@@ -213,7 +213,6 @@ class BxFilesModule extends BxDolFilesModule
         $sRss = bx_get('rss');
         if ($sRss !== false && $sRss) {
             $oSearch->aCurrent['paginate']['perPage'] = 10;
-            header('Content-Type: text/xml; charset=UTF-8');
             echo $oSearch->rss();
             exit;
         }
@@ -391,14 +390,14 @@ class BxFilesModule extends BxDolFilesModule
         exit;
     }
 
-    function serviceGetMemberMenuItem ()
+    function serviceGetMemberMenuItem ($sIcon = 'save')
     {
-        return parent::serviceGetMemberMenuItem ('save');
+        return parent::serviceGetMemberMenuItem ($sIcon);
     }
 
-    function serviceGetMemberMenuItemAddContent ()
+    function serviceGetMemberMenuItemAddContent ($sIcon = 'save')
     {
-        return parent::serviceGetMemberMenuItemAddContent ('save');
+        return parent::serviceGetMemberMenuItemAddContent ($sIcon);
     }
 
     function serviceGetWallPost($aEvent)
@@ -424,7 +423,7 @@ class BxFilesModule extends BxDolFilesModule
         ));
     }
 
-    function serviceGetWallAddComment($aEvent)
+    function serviceGetWallAddComment($aEvent, $aParams = array())
     {
     	return parent::serviceGetWallAddComment($aEvent, array(
     		'templates' => array(

@@ -38,7 +38,8 @@ class BxDolCmtsQuery extends BxDolDb
             $sFields = '`r`.`cmt_rate` AS `cmt_rated`,';
             $sJoin = "LEFT JOIN {$this->_sTableTrack} AS `r` ON (`r`.`cmt_system_id` = ".$this->_aSystem['system_id']." AND `r`.`cmt_id` = `c`.`cmt_id` AND `r`.`cmt_rate_author_id` = $iAuthorId)";
         }
-        $a = $this->getAll("SELECT
+
+        $aCmts = $this->getAll("SELECT
                 $sFields
                 `c`.`cmt_id`,
                 `c`.`cmt_parent_id`,
@@ -65,12 +66,12 @@ class BxDolCmtsQuery extends BxDolDb
 
         //LEFT JOIN `media` AS `m` ON (`m`.`med_id` = `p`.`Avatar` AND `m`.`med_status` = 'active')
 
-        for(reset($a) ; list ($k) = each ($a) ; ) {
-            $a[$k]['cmt_text'] = str_replace("[ray_url]", $sHomeUrl, $a[$k]['cmt_text']);
-            $a[$k]['cmt_ago'] = defineTimeInterval ($a[$k]['cmt_time_ts']);
+        foreach($aCmts as $k => $aCmt) {
+            $aCmts[$k]['cmt_text'] = str_replace("[ray_url]", $sHomeUrl, $aCmt['cmt_text']);
+            $aCmts[$k]['cmt_ago'] = defineTimeInterval($aCmt['cmt_time_ts']);
         }
 
-        return $a;
+        return $aCmts;
     }
 
     function getComment ($iId, $iCmtId, $iAuthorId = 0)
@@ -182,7 +183,7 @@ class BxDolCmtsQuery extends BxDolDb
         $aObjectsIds = array();
         $isDelOccured = 0;
         $a = $this->getAll ("SELECT `cmt_id`, `cmt_parent_id`, `cmt_object_id` FROM {$this->_sTable} WHERE `cmt_author_id` = ? AND `cmt_replies` = 0", [$iAuthorId]);
-        for ( reset($a) ; list (, $r) = each ($a) ; ) {
+        foreach ($a as $r) {
             $this->query ("DELETE FROM {$this->_sTable} WHERE `cmt_id` = '{$r['cmt_id']}'");
             $this->query ("UPDATE {$this->_sTable} SET `cmt_replies` = `cmt_replies` - 1 WHERE `cmt_id` = '{$r['cmt_parent_id']}'");
             $aObjectsIds[$r['cmt_object_id']] = $r['cmt_object_id'];

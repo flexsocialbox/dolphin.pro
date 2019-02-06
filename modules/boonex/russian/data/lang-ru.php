@@ -22,7 +22,13 @@ $LANG= array(
     '_ADVICE_H' => 'Совет',
     '_ADVICE_H1' => 'Совет',
     '_ALREADY_ACTIVATED' => 'Ваш аккаунт уже активирован..',
-    '_ATT_ACTIVE' => '<a href="pedit.php?ID={0}">Изменить</a><span class="sys-bullet"></span><a href="javascript:void(0);" onclick="javascript:loadHtmlInPopup(\'explanation_popup\', \'explanation.php?explain=Active\');">Пояснение</a><span class="sys-bullet"></span><a href="change_status.php">Спрятать</a>',
+    '_ATT_ACTIVE' => '<a href="pedit.php?ID={0}">Изменить</a>
+    <span class="sys-bullet"></span>
+    <a href="javascript:void(0);" onclick="javascript:loadHtmlInPopup(\'explanation_popup\', \'explanation.php?explain=Active\');">Пояснение</a>
+    <span class="sys-bullet"></span>
+    <a href="change_status.php">Спрятать</a>
+    <span class="sys-bullet"></span>
+    <a href="javascript:void(0);" onclick="bx_export_user_data_popup()">Экспортировать персональные данные</a>',
     '_ATT_ACTIVE_E' => 'Вы - активный пользователь. Если нужно, Вы можете спрятать свою учётную запись от остальных.',
     '_ATT_APPROVAL' => '<a href="javascript:void(0);" onclick="javascript:loadHtmlInPopup(\'explanation_popup\', \'explanation.php?explain=Approval\');">Инфо</a>',
     '_ATT_APPROVAL_E' => 'Активация Вашей учётной записи в процессе. Обычно она занимает не более 24 часов. Спасибо за Ваше терпение.',
@@ -1441,6 +1447,7 @@ $LANG= array(
   '_adm_txt_mlevels_edit' => 'Редактировать',
   '_adm_txt_mlevels_icon' => 'Иконка изображения',
   '_adm_txt_mlevels_icon_err' => 'Вы должны выбрать картинку для миниатюры',
+  '_adm_txt_mlevels_icon_info_edit' => 'Оставьте пустым, если Вы хотите использовать ранее загруженное изображение.',
   '_adm_txt_mlevels_is_used' => 'Это членство уже назначено пользователям, поэтому не может быть удалено',
   '_adm_txt_mlevels_levels' => 'Членства',
   '_adm_txt_mlevels_levels_add' => 'Добавить',
@@ -1702,6 +1709,7 @@ $LANG= array(
   '_mma_comments_remove_own' => 'удалять свои комментарии',
   '_mma_comments_vote' => 'голосовать за комментарии',
   '_mma_get_other_members_emails' => 'получить электронный адрес другого пользователя',
+  '_mma_send_friend_request' => 'посылать предложения дружбы',
   '_mma_send_greetings' => 'посылать приветствия',
   '_mma_send_messages' => 'посылать сообщения',
   '_mma_view_profiles' => 'просматривать профили',
@@ -1887,6 +1895,7 @@ $LANG= array(
   '_sys_box_title_download' => 'Загрузить',
   '_sys_box_title_search_keyword' => 'Поиск по ключевому слову',
   '_sys_box_title_search_people' => 'Поиск пользователей',
+  '_sys_btn_thumbnail_change' => 'Изменить миниатюру',
   '_sys_btn_cover_change' => 'Изменить обложку',
   '_sys_btn_fans_add_to_admins' => 'В админы',
   '_sys_btn_fans_confirm' => 'Принять',
@@ -1914,6 +1923,7 @@ $LANG= array(
   '_sys_cnts_txt_mutual_friends' => '{0} общих друзей',
   '_sys_email_footer_info' => 'Чтобы отписаться, зайдите в свой аккаунт, отредактируйте свой профиль и уберите отметку с \'Получать уведомления сайта\'.',
   '_sys_err_categories' => 'укажите как минимум одну категорию',
+  '_sys_export_success' => 'Ссылка на скачивание данных была отправлена на емейл: {0}',
   '_sys_invitation_step_additional_emails' => 'Дополнительные электронные адреса',
   '_sys_invitation_step_additional_emails_info' => 'Добавить ограниченное число e-mail адресов для посылки приглашения',
   '_sys_invitation_step_invitation_text' => 'Текст приглашения',
@@ -2049,6 +2059,7 @@ $LANG= array(
   '_sys_media_disapproved' => 'Файл еще не одобрен',
   '_sys_media_processing' => 'Файл еще не обработан',
   '_sys_media_not_found' => 'Файл не найден',
+  '_sys_wrn_disabled_scripts' => 'Ваш браузер не поддерживает скрипты!',
   '_sys_x_byte' => '{0} Байт',
   '_sys_x_gigabyte' => '{0} Гб',
   '_sys_x_kilobyte' => '{0} Кб',

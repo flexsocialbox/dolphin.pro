@@ -71,6 +71,8 @@ if(isset($_POST['create_language'])) {
     foreach($aItems as $aItem)
         $aContent[$aItem['key']] = $aItem['string'];
 
+    ksort($aContent);
+
     $sName = 'lang_' . $aLanguage['Name'] . '.php';
     $sContent = "<?php\n\$aLangInfo=" . var_export($aLanguage, true) . ";\n\$aLangContent=" . var_export($aContent, true) . ";\n?>";
 
@@ -162,7 +164,8 @@ function PageCodeMain($aResults)
         'adm-langs-btn-langs' => array('href' => 'javascript:void(0)', 'onclick' => 'javascript:onChangeType(this)', 'title' => _t('_adm_txt_langs_languages'), 'active' => isset($aResults['langs']) ? 1 : 0),
         'adm-langs-btn-langs-add' => array('href' => 'javascript:void(0)', 'onclick' => 'javascript:onChangeType(this)', 'title' => _t('_adm_txt_langs_languages_add'), 'active' => isset($aResults['langs-add']) ? 1 : 0),
         'adm-langs-btn-langs-import' => array('href' => 'javascript:void(0)', 'onclick' => 'javascript:onChangeType(this)', 'title' => _t('_adm_txt_langs_languages_import'), 'active' => isset($aResults['langs-import']) ? 1 : 0),
-        'adm-langs-btn-settings' => array('href' => 'javascript:void(0)', 'onclick' => 'javascript:onChangeType(this)', 'title' => _t('_adm_txt_langs_settings'), 'active' => isset($aResults['settings']) ? 1 : 0)
+        'adm-langs-btn-settings' => array('href' => 'javascript:void(0)', 'onclick' => 'javascript:onChangeType(this)', 'title' => _t('_adm_txt_langs_settings'), 'active' => isset($aResults['settings']) ? 1 : 0),
+        'adm-langs-btn-help' => array('href' => 'https://github.com/boonex/dolphin.pro/wiki/Using-Language-Keys-to-Change-Site-Text', 'target' => '_blank', 'title' => _t('_help'))
     );
 
     $sResult = $GLOBALS['oAdmTemplate']->parseHtmlByName('langs.html', array(
@@ -198,7 +201,7 @@ function _getKeysList($mixedResult, $bActive = false)
 
         $aKeys = $GLOBALS['MySQL']->getAll("SELECT `tk`.`ID` AS `id`, `tk`.`Key` AS `key`, `tc`.`Name` AS `category` FROM `sys_localization_keys` AS `tk` 
                  LEFT JOIN `sys_localization_strings` AS `ts` ON `tk`.`ID`=`ts`.`IDKey` LEFT JOIN `sys_localization_categories` AS `tc` ON `tk`.`IDCategory`=`tc`.`ID` 
-                 WHERE `tk`.`Key` LIKE ? COLLATE utf8_general_ci OR `ts`.`String` LIKE ? GROUP BY `tk`.`ID`", ["%{$sFilter}%", "%{$sFilter}%"]);
+                 WHERE `tk`.`Key` LIKE ? OR `ts`.`String` LIKE ? GROUP BY `tk`.`ID`", ["%{$sFilter}%", "%{$sFilter}%"]);
         foreach($aKeys as $aKey)
             $aItems[] = array(
                 'id' => $aKey['id'],
@@ -588,7 +591,7 @@ function importLanguage(&$aData, &$aFiles)
 {
     global $MySQL;
 
-    $sTmpPath = $GLOBALS['dir']['tmp'] . mktime() . ".php";
+    $sTmpPath = $GLOBALS['dir']['tmp'] . time() . ".php";
     if(!file_exists($aFiles['ImportLanguage_File']['tmp_name']) || !move_uploaded_file($aFiles['ImportLanguage_File']['tmp_name'], $sTmpPath))
         return '_adm_txt_langs_cannot_upload_file';
 

@@ -182,7 +182,7 @@ class BxAdsSearchUnit extends BxTemplSearchResultText
     {
         $sCode = null;
         $aData = $this->getSearchData();
-        if (count($aData) > 0) {
+        if (is_array($aData) && count($aData) > 0) {
             $sCode .= $this->addCustomParts();
             foreach ($aData as $iKey => $aValue) {
                 $sCode .= $this->displaySearchUnit($aValue);
@@ -400,7 +400,7 @@ EOF;
         return array();
     }
 
-    function showPagination($bAdmin = false, $bChangePage = true, $bPageReload = true)
+    function showPagination($aParams = array())
     {
         $aPgnParams = array(
             'page_url' => $this->aCurrent['paginate']['page_url'],
@@ -421,7 +421,7 @@ EOF;
             $sLoadDynamicUrl = $this->id . ', \'' . BX_DOL_URL_ROOT . 'searchKeywordContent.php?searchMode=ajax&section[]=bx_ads' . $aLinkAddon['params'];
             $sKeyword = bx_get('keyword');
             if ($sKeyword !== false && mb_strlen($sKeyword) > 0)
-                $sLoadDynamicUrl .= '&keyword=' . strip_tags($sKeyword);
+                $sLoadDynamicUrl .= '&keyword=' . rawurlencode(strip_tags($sKeyword));
 
             $aPgnParams['page_url'] = $sPageLink;
             $aPgnParams['on_change_page'] = 'return !loadDynamicBlock(' . $sLoadDynamicUrl . $aLinkAddon['paginate'].'\');';

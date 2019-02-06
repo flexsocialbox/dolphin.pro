@@ -8,12 +8,9 @@
 define('BX_DOL_TABLE_PROFILES', '`Profiles`');
 
 require_once(BX_DIRECTORY_PATH_CLASSES . 'BxDolParams.php');
-require_once(BX_DIRECTORY_PATH_INC . 'traits/BxDolTraitLogger.php');
 
 class BxDolDb
 {
-    use BxDolTraitLogger;
-
     protected $host, $port, $socket, $dbname, $user, $password;
 
     /**
@@ -107,7 +104,7 @@ class BxDolDb
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES   => false,
-                PDO::ATTR_PERSISTENT         => true
+                PDO::ATTR_PERSISTENT         => defined('DATABASE_PERSISTENT') && DATABASE_PERSISTENT ? true : false,
             ]
         );
     }
@@ -631,6 +628,33 @@ class BxDolDb
         // behaves kinda like mysql_real_escape_string
         // p.s. things we do for legacy code
         return trim($pdoEscapted, "'");
+    }
+
+    /**
+     * This function is usefull when you need to form array of parameters to pass to IN(...) SQL construction.
+     * Example:
+     * @code
+     * $a = array(2, 4.5, 'apple', 'car');
+     * $s = "SELECT * FROM `t` WHERE `a` IN (" . $oDb->implode_escape($a) . ")";
+     * echo $s; // outputs: SELECT * FROM `t` WHERE `a` IN (2, 4.5, 'apple', 'car')
+     * @endcode
+     *
+     * @param $mixed array or parameters or just one paramter
+     * @return string which is ready to pass to IN(...) SQL construction
+     */
+    public function implode_escape ($mixed)
+    {
+        if (is_array($mixed)) {
+            $s = '';
+            foreach ($mixed as $v)
+                $s .= (is_numeric($v) ? $v : $this->escape($v)) . ',';
+            if ($s)
+                return substr($s, 0, -1);
+            else
+                return 'NULL';
+        }
+
+        return is_numeric($mixed) ? $mixed : ($mixed ? $this->escape($mixed) : 'NULL');
     }
 
     /**

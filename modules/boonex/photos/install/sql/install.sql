@@ -18,8 +18,8 @@ CREATE TABLE `[db_prefix]_main` (
   `Hash` varchar(32) NOT NULL default '',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Hash` (`Hash`),
+  UNIQUE KEY `Uri` (`Uri`),
   KEY `Owner` (`Owner`),
-  KEY `Uri` (`Uri`),
   KEY `Date` (`Date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -116,7 +116,7 @@ INSERT INTO `sys_options` (`Name`, `VALUE`, `kateg`, `desc`, `Type`, `check`, `e
 ('[db_prefix]_file_height', '750', @iKatID, 'Height of main photo unit (in pixels)', 'digit', '', '', 35, ''),
 ('[db_prefix]_client_width', '2048', @iKatID, 'Width for photo resizing in browser (in pixels)', 'digit', '', '', 38, ''),
 ('[db_prefix]_client_height', '2048', @iKatID, 'Height for photo resizing in browser (in pixels)', 'digit', '', '', 39, ''),
-('[db_prefix]_flickr_photo_api', '', @iKatID, 'Flickr API key. You can get Flickr API keys here: http://www.flickr.com/services/api/keys/', 'digit', '', '', 50, ''),
+('[db_prefix]_flickr_photo_api', '', @iKatID, 'Flickr API key. You can get Flickr API keys here: https://www.flickr.com/services/api/keys/', 'digit', '', '', 50, ''),
 ('[db_prefix]_rss_feed_on', 'on', @iKatID, 'Enable RSS feed', 'checkbox', '', '', 52, ''),
 ('[db_prefix]_uploader_switcher', 'html5,record,embed', @iKatID, 'Available uploaders', 'list', '', '', 54, 'html5,regular,record,embed'),
 ('[db_prefix]_header_cache', '0', @iKatID, 'Header Cache time (in seconds, leave 0 to disable)', 'digit', '', '', 56, ''),
@@ -351,6 +351,12 @@ INSERT INTO `sys_objects_site_maps` (`object`, `title`, `priority`, `changefreq`
 SET @iMaxOrderCharts = (SELECT MAX(`order`)+1 FROM `sys_objects_charts`);
 INSERT INTO `sys_objects_charts` (`object`, `title`, `table`, `field_date_ts`, `field_date_dt`, `query`, `active`, `order`) VALUES
 ('[db_prefix]', '_bx_photos', 'bx_photos_main', 'Date', '', '', 1, @iMaxOrderCharts);
+
+-- export
+
+SET @iMaxOrderExports = (SELECT MAX(`order`)+1 FROM `sys_objects_exports`);
+INSERT INTO `sys_objects_exports` (`object`, `title`, `class_name`, `class_file`, `order`, `active`) VALUES
+('[db_prefix]', '_bx_photos', 'BxPhotosExport', 'modules/boonex/photos/classes/BxPhotosExport.php', @iMaxOrderExports, 1);
 
 -- member info
 

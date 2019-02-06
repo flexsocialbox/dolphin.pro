@@ -37,8 +37,10 @@ class BxDolTwigSearchResult extends BxTemplSearchResult
         return $oMain->_oTemplate->unit($aData, $this->sUnitTemplate, $this->oVotingView);
     }
 
-    function showPagination($sUrlAdmin = false)
+    function showPagination($aParams = array())
     {
+        $sUrlAdmin = isset($aParams['url_admin']) && !empty($aParams['url_admin']) ? $aParams['url_admin'] : false;
+
         $oMain = $this->getMain();
         $oConfig = $oMain->_oConfig;
         bx_import('BxDolPaginate');
@@ -84,5 +86,13 @@ class BxDolTwigSearchResult extends BxTemplSearchResult
     {
         $this->setPublicUnitsOnly(true);
         return parent::rss();
+    }
+
+    function getRssUnitImage (&$a, $sField)
+    {
+        $aImage = array ('ID' => $a['author_id'], 'Avatar' => $a[$sField]);
+        $aImage = BxDolService::call('photos', 'get_image', array($aImage, 'browse'), 'Search');
+
+        return $aImage['no_image'] ? '' : $aImage['file'];
     }
 }

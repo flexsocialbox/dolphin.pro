@@ -1601,7 +1601,7 @@ EOF;
                 foreach ($aCategories as $iKey => $sCatValue) {
                     $sCatLink = $oBlogSearch->getCurrentUrl('category', title2uri(trim($sCatValue)),
                         title2uri(trim($sCatValue)),
-                        array('ownerId' => $iMemberID, 'ownerName' => $aAuthor['NickName']));
+                        array('ownerId' => $iMemberID, 'blogOwnerName' => $aAuthor['NickName']));
                     $aCatLinks[] = '<a href="' . $sCatLink . '" rel="nofollow">' . $sCatValue . '</a>';
                 }
                 $sCats = implode(", ", $aCatLinks);
@@ -1933,7 +1933,7 @@ EOF;
                 break;
         }
 
-        $sAdmPost = BxDolPageView::getBlockCaptionMenu(mktime(), array(
+        $sAdmPost = BxDolPageView::getBlockCaptionMenu(time(), array(
             'blogs_main'    => array('href' => $sBlogMainLink, 'title' => $sMainC, 'active' => $sMainTabClass),
             'blogs_add'     => array('href' => $sBlogAddLink, 'title' => $sAddC, 'active' => $sAddTabClass),
             'blogs_manage'  => array('href' => $sBlogManageLink, 'title' => $sManageC, 'active' => $sManageTabClass),
@@ -3073,7 +3073,6 @@ EOF;
         if (is_array($aRssUnits) && count($aRssUnits) > 0) {
 
             foreach ($aRssUnits as $iUnitID => $aUnitInfo) {
-                $sPostLink = '';
                 $iPostID = (int)$aUnitInfo['UnitID'];
                 $aPost = array('Permalink' => $aUnitInfo['UnitUri'], 'Link' => $iPostID);
                 $sPostLink = $this->genBlogLink('show_member_post', $aUser, '', $aPost);
@@ -3081,7 +3080,7 @@ EOF;
                 $aRssUnits[$iUnitID]['UnitLink'] = $sPostLink;
 
                 $sFileName = $this->_oDb->getPostPhotoByID($iPostID);
-                $sPostPhoto = ($sFileName != '') ? BX_BLOGS_IMAGES_URL . 'big_' . $sFileName : '';
+                $sPostPhoto = ($sFileName != '') ? BX_BLOGS_IMAGES_URL . 'orig_' . $sFileName : '';
                 $aRssUnits[$iUnitID]['UnitIcon'] = $sPostPhoto;
             }
 
@@ -3090,8 +3089,7 @@ EOF;
 
             bx_import('BxDolRssFactory');
             $oRssFactory = new BxDolRssFactory();
-
-            header('Content-Type: text/xml; charset=utf-8');
+            $oRssFactory->SetRssHeader();
             echo $oRssFactory->GenRssByData($aRssUnits, $sUnitTitleC, $sMainLink);
             exit;
         }

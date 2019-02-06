@@ -109,6 +109,16 @@ function getLocaleFormat($iCode = BX_DOL_LOCALE_DATE_SHORT, $iType = BX_DOL_LOCA
 }
 
 /**
+ * Get UTC/GMT time string in ISO8601 date format from provided unix timestamp
+ * @param $iUnixTimestamp - unix timestamp
+ * @return ISO8601 formatted date/time string
+ */
+function bx_time_utc($iUnixTimestamp)
+{
+    return gmdate(DATE_ISO8601, (int)$iUnixTimestamp);
+}
+
+/**
  * Function will check on blocked status;
  *
  * @param  : $iFirstProfile (integer) - first profile's id;
@@ -464,9 +474,7 @@ function sendMail(
         return false;
     }
 
-    if ($iRecipientID) {
-        $aRecipientInfo = getProfileInfo($iRecipientID);
-    }
+    $aRecipientInfo = $iRecipientID ? getProfileInfo($iRecipientID) : array();
 
     // don't send mail to the user if he/she decided to not receive any site's notifications, unless it is critical emails (like email confirmation)
     if (!$bForceSend) {
@@ -529,7 +537,7 @@ function sendMail(
             'html'    => 'html' == $sEmailFlag ? true : false,
         );
 
-        $oZ = new BxDolAlerts('profile', 'send_mail', $aRecipientInfo['ID'], '', $aAlertData);
+        $oZ = new BxDolAlerts('profile', 'send_mail', $iRecipientID, '', $aAlertData);
         $oZ->alert();
     }
 
@@ -1934,17 +1942,4 @@ function getPostFieldIfSet($sField)
 function getGetFieldIfSet($sField)
 {
     return (!isset($_GET[$sField])) ? null : $_GET[$sField];
-}
-
-/**
- * Var dumps then dies
- *
- * @param $dump
- */
-function dd($dump)
-{
-    echo '<pre>';
-    var_dump($dump);
-    echo '</pre>';
-    exit;
 }

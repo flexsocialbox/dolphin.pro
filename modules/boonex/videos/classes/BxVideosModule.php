@@ -65,17 +65,17 @@ class BxVideosModule extends BxDolFilesModule
         return PROFILE_VIDEO_CATEGORY;
     }
 
-    function serviceGetMemberMenuItem ()
+    function serviceGetMemberMenuItem ($sIcon = 'film')
     {
-        return parent::serviceGetMemberMenuItem ('film');
+        return parent::serviceGetMemberMenuItem ($sIcon);
     }
 
-    function serviceGetMemberMenuItemAddContent ()
+    function serviceGetMemberMenuItemAddContent ($sIcon = 'film')
     {
-        return parent::serviceGetMemberMenuItemAddContent ('film');
+        return parent::serviceGetMemberMenuItemAddContent ($sIcon);
     }
 
-    function getWallPost($aEvent, $sIcon, $aParams = array())
+    function getWallPost($aEvent, $sIcon = 'save', $aParams = array())
     {
     	return parent::getWallPost($aEvent, $sIcon, array(
     		'templates' => array(
@@ -85,7 +85,7 @@ class BxVideosModule extends BxDolFilesModule
     	));
     }
 
-    function getWallPostOutline($aEvent, $sIcon, $aParams = array())
+    function getWallPostOutline($aEvent, $sIcon = 'save', $aParams = array())
     {
     	return parent::getWallPostOutline($aEvent, $sIcon, array(
     		'templates' => array(

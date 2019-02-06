@@ -88,6 +88,7 @@ $aLangContent = array(
   '_bx_sites_form_field_err' => 'неверное значение',
   '_bx_sites_form_other_thumbnail' => 'Другая миниатюра',
   '_bx_sites_form_photo' => 'Фото',
+  '_bx_sites_form_photo_inf' => 'Оставьте данное поле пустым, чтобы позволить системе получить изображение автоматически из предоставленной ссылки.',
   '_bx_sites_form_title' => 'Заголовок',
   '_bx_sites_form_url' => 'Адрес',
   '_bx_sites_home_top_menu_sitem' => 'Главная',
@@ -143,7 +144,7 @@ $aLangContent = array(
   '_mma_sites_view' => 'Сайты: смотреть',
   '_wall_reposted_bx_sites_add' => 'зарепостил сайт',
   '_wall_reposted_title_bx_sites_add' => '{0} зарепостил сайт',
-  '_wall_reposted_bx_sites_commentPost' => 'зарепостил комментарий к сайту',
-  '_wall_reposted_title_bx_sites_commentPost' => '{0} зарепостил комментарий к сайту',
+  '_wall_reposted_bx_sites_comment_add' => 'зарепостил комментарий к сайту',
+  '_wall_reposted_title_bx_sites_comment_add' => '{0} зарепостил комментарий к сайту',
   '_sbs_txt_title_bx_sites' => 'Сайты',
 );

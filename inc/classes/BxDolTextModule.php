@@ -27,7 +27,7 @@ class BxDolTextModule extends BxDolModule
         parent::__construct($aModule);
 
         $this->_oConfig->init($this->_oDb);
-        $this->_oTemplate->init($this);
+        $this->_oTemplate->setModule($this);
 
         $sClassPrefix = $this->_oConfig->getClassPrefix();
 
@@ -449,6 +449,7 @@ class BxDolTextModule extends BxDolModule
         }
 
         $oRss = new BxDolRssFactory();
+        $oRss->SetRssHeader();
         return $oRss->GenRssByData($aRssData, _t('_news_rss_caption'), $this->_oConfig->getBaseUri() . 'act_rss/');
     }
     function actionGetEntries($sSampleType = 'all', $iStart = 0, $iPerPage = 0)

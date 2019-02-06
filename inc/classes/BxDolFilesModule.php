@@ -28,7 +28,6 @@ class BxDolFilesModule extends BxDolModule
     {
         parent::__construct($aModule);
         $this->_iProfileId = $this->_oDb->iViewer;
-        $this->_oTemplate->init($this->_oDb);
         $this->aPageTmpl = array(
             'name_index'  => 1,
             'header'      => $GLOBALS['site']['title'],
@@ -270,13 +269,12 @@ class BxDolFilesModule extends BxDolModule
                 );
                 $oSearch->aCurrent['restriction']['activeStatus']['operator'] = '<>';
 
-                $aIds         = '';
+                $aIds = array();
                 $aExcludeList = $oSearch->getSearchData();
-                if (!empty($aExcludeList)) {
-                    foreach ($aExcludeList as $aValue) {
+                if (!empty($aExcludeList))
+                    foreach ($aExcludeList as $aValue)
                         $aIds[] = $aValue['id'];
-                    }
-                }
+
                 $aInfo['prevItem'] = $this->oAlbums->getClosestObj($aInfo['albumId'], $aInfo['medID'], 'prev',
                     $aInfo['obj_order'], $aIds);
                 $aInfo['nextItem'] = $this->oAlbums->getClosestObj($aInfo['albumId'], $aInfo['medID'], 'next',
@@ -1978,6 +1976,7 @@ class BxDolFilesModule extends BxDolModule
                 'cpt_user_name' => $sOwner,
                 'cpt_added_new' => _t('_' . $sPrefix . '_wall_added_new'),
                 'cpt_item_url' => $aItem['url'],
+                'cpt_item_title' => $aItem['title'],
                 'cpt_item' => $sItemTxt,
                 'post_id' => $aEvent['id']
             ))),

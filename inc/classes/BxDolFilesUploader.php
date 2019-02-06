@@ -482,13 +482,8 @@ class BxDolFilesUploader extends BxDolTemplate
      *                            - id: uploaded file ID if file was successfully uploaded
      *                            - error: error message if file wasn't successfully uploaded
      */
-    function performUpload(
-        $sFilePath,
-        $sRealFilename = '',
-        $aInfo = array(),
-        $isMoveUploadedFile = true,
-        $aExtraParams = array()
-    ) {
+    function performUpload($sFilePath, $sRealFilename = '', $aInfo = array(), $isMoveUploadedFile = true, $aExtraParams = array())
+    {
         // override in the particular module
     }
 
@@ -642,15 +637,6 @@ class BxDolFilesUploader extends BxDolTemplate
                     'attrs'    => array(
                         'multiplyable' => $aExtras['from_wall'] ? 'false' : 'true',
                         'onchange' => "parent." . $this->_sJsPostObject . ".onFileChangedEvent(this);"
-                    )
-                ),
-                'agreement' => array(
-                    'type'     => 'checkbox',
-                    'name'     => 'agree',
-                    'label'    => _t('_bx_' . $this->sUploadTypeLC . 's_i_have_the_right_to_distribute'),
-                    'required' => true,
-                    'attrs'    => array(
-                        'onchange' => "parent.{$this->_sJsPostObject}.onFileChangedEvent();"
                     )
                 ),
                 'submit'    => array(

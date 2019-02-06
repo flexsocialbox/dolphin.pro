@@ -9,7 +9,7 @@ bx_import('BxDolModuleTemplate');
 bx_import('BxTemplProfileView');
 bx_import('BxTemplFormView');
 bx_import('BxTemplSearchResult');
-bx_import('BxDolAdminSettings');;
+bx_import('BxDolAdminSettings');
 
 class BxSctrTemplate extends BxDolModuleTemplate
 {
@@ -29,7 +29,7 @@ class BxSctrTemplate extends BxDolModuleTemplate
     /**
      * @depricated
      */
-    function init(&$oModule, &$oDb)
+    function initialize(&$oModule, &$oDb)
     {
         $this->_oModule = $oModule;
         $this->_oDb = $oDb;

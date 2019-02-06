@@ -6,6 +6,8 @@
 
 $aLangContent = array(
     '_sys_module_payment' => 'Платежи',
+
+    '_payment' => 'Платежи',
     '_payment_pcpt_details' => 'Детали платежей',
     '_payment_pcpt_view_cart' => 'Корзина',
     '_payment_pcpt_admin' => 'Платежи',
@@ -65,7 +67,8 @@ $aLangContent = array(
     '_payment_btn_history' => 'История',
     '_payment_btn_cart' => 'Корзина',
     '_payment_amenu_payment' => 'Платежи',
-    '_payment_txt_shopping_cart' => '{0} корзина',
+    '_payment_txt_shopping_cart' => 'Продавец: {0}',
+    '_payment_txt_shopping_cart_summary' => 'товаров: {0}, цена: {1} {2}',
     '_payment_txt_date' => 'Дата',
     '_payment_txt_client' => 'Клиент',
     '_payment_txt_seller' => 'Продавец',

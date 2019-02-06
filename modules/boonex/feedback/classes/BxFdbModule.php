@@ -139,7 +139,7 @@ class BxFdbModule extends BxDolTextModule
             $sLink = BX_DOL_URL_ROOT . $this->_oConfig->getBaseUri() . 'post/';
             $sCaption = _t('_feedback_lcaption_post');
 
-            $sMenu = BxDolPageView::getBlockCaptionMenu(mktime(), array(
+            $sMenu = BxDolPageView::getBlockCaptionMenu(time(), array(
                 'fdb_post' => array('href' => $sLink, 'title' => $sCaption)
             ));
         }
@@ -189,7 +189,7 @@ class BxFdbModule extends BxDolTextModule
         $this->_oTemplate->getPageCode($aParams);
     }
 
-    function actionAdmin()
+    function actionAdmin($sName = '')
     {
         $GLOBALS['iAdminPage'] = 1;
         require_once(BX_DIRECTORY_PATH_INC . 'admin_design.inc.php');

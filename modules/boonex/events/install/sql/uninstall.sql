@@ -96,6 +96,10 @@ SET @iHandler := (SELECT `id` FROM `sys_alerts_handlers` WHERE `name` = 'bx_even
 DELETE FROM `sys_alerts` WHERE `handler_id` = @iHandler;
 DELETE FROM `sys_alerts_handlers` WHERE `id` = @iHandler;
 
+SET @iHandler := (SELECT `id` FROM `sys_alerts_handlers` WHERE `name` = 'bx_events_set_param' LIMIT 1);
+DELETE FROM `sys_alerts` WHERE `handler_id` = @iHandler;
+DELETE FROM `sys_alerts_handlers` WHERE `id` = @iHandler;
+
 -- privacy
 DELETE FROM `sys_privacy_actions` WHERE `module_uri` = 'events';
 
@@ -108,4 +112,7 @@ DELETE FROM `sys_objects_site_maps` WHERE `object` = 'bx_events';
 
 -- chart
 DELETE FROM `sys_objects_charts` WHERE `object` = 'bx_events';
+
+-- export
+DELETE FROM `sys_objects_exports` WHERE `object` = 'bx_events';
 

@@ -35,6 +35,8 @@ class BxSitesFormEdit extends BxSitesFormAdd
         $oCategories->getTagObjectConfig ();
         $this->_aCustomForm['inputs']['categories'] = $oCategories->getGroupChooser ('bx_sites', (int)$this->_oModule->iOwnerId, true, $this->_aParam['categories']);
 
+        $this->_aCustomForm['inputs']['photo']['info'] = '';
+
         $aFormInputsSubmit = array (
             'Submit' => array (
                 'type' => 'submit',
@@ -46,7 +48,7 @@ class BxSitesFormEdit extends BxSitesFormAdd
 
         $this->_aCustomForm['inputs'] = array_merge($this->_aCustomForm['inputs'], $aFormInputsSubmit);
 
-        parent::__construct ($this->_aCustomForm);
+        BxTemplFormView::__construct ($this->_aCustomForm);
     }
 
     function checkUploadPhoto()
