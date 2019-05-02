@@ -965,7 +965,8 @@ INSERT INTO `sys_email_templates` (`Name`, `Subject`, `Body`, `Desc`, `LangID`) 
 ('t_FriendRequest', 'Friendship Request', '<bx_include_auto:_email_header.html />\r\n\r\n    <p><b>Dear <Recipient></b>,</p>\r\n   \r\n    <p><a href="<SenderLink>"><Sender></a> wants to be friends with you. <a href="<RequestLink>">Respond</a>.</p>\r\n    <br /> \r\n    <bx_include_auto:_email_footer.html />', 'Friendship Request', 0),
 ('t_FriendRequestAccepted', 'Friendship Request Accepted', '<bx_include_auto:_email_header.html />\r\n\r\n    <p><b>Dear <Recipient></b>,</p>\r\n    \r\n    <p><a href="<SenderLink>"><Sender></a> accepted your friendship request.</p>\r\n    <br /> \r\n    <bx_include_auto:_email_footer.html />', 'Friendship Request Accepted', 0),
 ('t_SpamReportAuto', '<SiteName> Automatic Spam Report', '<bx_include_auto:_email_header.html />\r\n\r\n\r\n<b>Profile:</b> <a href="<SpammerUrl>"><SpammerNickName></a><br />\r\n\r\n<b>Page:</b> <Page><br />\r\n\r\n<b>GET variables:</b>\r\n<pre>\r\n<Get>\r\n</pre>\r\n\r\n<b>Spam Content:</b>\r\n<pre>\r\n<SpamContent>\r\n</pre>\r\n\r\n\r\n<bx_include_auto:_email_footer.html />', 'Automatic spam report', 0),
-('t_ModulesUpdates', '<SiteName> Automatic modules updates checker', '<bx_include_auto:_email_header.html />\r\n\r\n\r\n<p><b>Dear <RealName></b>,</p>\r\n\r\n<p>The following updates are available:</p>\r\n\r\n<p><MessageText></p>\r\n\r\n<p>If you want to install any of them you need to go to your site''s admin panel -> Modules -> Add & Manage and click Check For Updates button in Installed Modules block. It will load all available updates.</p>\r\n\r\n\r\n<bx_include_auto:_email_footer.html />', 'Message to admin about modules updates', 0);
+('t_ModulesUpdates', '<SiteName> Automatic modules updates checker', '<bx_include_auto:_email_header.html />\r\n\r\n\r\n<p><b>Dear <RealName></b>,</p>\r\n\r\n<p>The following updates are available:</p>\r\n\r\n<p><MessageText></p>\r\n\r\n<p>If you want to install any of them you need to go to your site''s admin panel -> Modules -> Add & Manage and click Check For Updates button in Installed Modules block. It will load all available updates.</p>\r\n\r\n\r\n<bx_include_auto:_email_footer.html />', 'Message to admin about modules updates', 0),
+('t_ExportReady', '<SiteName> Your data export is ready', '<bx_include_auto:_email_header.html />\r\n\r\n\r\n<p><b>Dear <RealName></b>,</p>\r\n\r\n<p>Your data download link:</p>\r\n\r\n<p><FileUrl></p>\r\n\r\n<p>Link will be availiable for 24 hours.</p>\r\n\r\n\r\n<bx_include_auto:_email_footer.html />', 'Notification about user data export', 0);
 
 
 -- --------------------------------------------------------
@@ -1281,7 +1282,7 @@ INSERT INTO `sys_options` VALUES
 SET @iCatHidden = 0;
 INSERT INTO `sys_options` VALUES
 
-('sys_tmp_version', '7.4.0', @iCatHidden, 'Dolphin version ', 'digit', '', '', 10, ''),
+('sys_tmp_version', '7.4.2', @iCatHidden, 'Dolphin version ', 'digit', '', '', 10, ''),
 ('license_code', '', @iCatHidden, 'Dolphin License Code', 'digit', '', '', 11, ''),
 ('license_expiration', '', @iCatHidden, 'Dolphin License Expiration', 'digit', '', '', 12, ''),
 ('license_checksum', '', @iCatHidden, 'Dolphin License Checksum', 'digit', '', '', 13, ''),
@@ -3774,7 +3775,6 @@ CREATE TABLE IF NOT EXISTS `sys_objects_social_sharing` (
 
 INSERT INTO `sys_objects_social_sharing` (`object`, `content`, `order`, `active`) VALUES
 ('facebook', '<iframe src="//www.facebook.com/plugins/like.php?href={url_encoded}&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21&amp;locale={locale}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100%; height:21px;" allowTransparency="true"></iframe>', 1, 1),
-('googleplus', '<div style="height:21px;">\r\n<div class="g-plusone" data-size="medium" data-href="{url}"></div>\r\n<script type="text/javascript">\r\n  window.___gcfg = {lang: ''{lang}''};\r\n  (function() {\r\n    var po = document.createElement(''script''); po.type = ''text/javascript''; po.async = true;\r\n    po.src = ''https://apis.google.com/js/plusone.js'';\r\n    var s = document.getElementsByTagName(''script'')[0]; s.parentNode.insertBefore(po, s);\r\n  })();\r\n</script>\r\n</div>', 2, 1),
 ('twitter', '<iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/tweet_button.html?url={url_encoded}&amp;text={title_encoded}&amp;size=medium&amp;count=horizontal&amp;lang={lang}" style="width:100%;height:21px;"></iframe>', 3, 1),
 ('pinterest', '<a href="http://pinterest.com/pin/create/button/?url={url_encoded}&media={img_url_encoded}&description={title_encoded}" class="pin-it-button" count-layout="horizontal"><img border="0" src="//assets.pinterest.com/images/PinExt.png" title="Pin It" /></a>\r\n\r\n<script type="text/javascript" src="//assets.pinterest.com/js/pinit.js"></script>', 4, 1);
 

@@ -9,12 +9,12 @@ $aConfig = array(
      * Main Section.
      */
     'title' => 'PayPal PayFlow Pro',
-    'version' => '1.4.0',
+    'version' => '1.4.2',
     'vendor' => 'BoonEx',
     'update_url' => '',
 
     'compatible_with' => array(
-        '7.4.0'
+        '7.4.2'
     ),
 
     /**
